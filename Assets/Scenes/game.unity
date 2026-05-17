@@ -1649,8 +1649,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cae7acd73503c340bf92d2f4f834df7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MouseLook
-  mouseSensitivity: 500
+  mouseSensitivity: 50
+  mouseDeadZone: 0.001
   playerBody: {fileID: 1871702661}
+  cameraPivot: {fileID: 0}
 --- !u!65 &1871702664
 BoxCollider:
   m_ObjectHideFlags: 0

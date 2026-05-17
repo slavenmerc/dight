@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MouseLook : MonoBehaviour
 {
@@ -34,22 +35,19 @@ public class MouseLook : MonoBehaviour
 
     void LateUpdate()
     {
-        float mouseX = Input.GetAxisRaw("Mouse X");
-        float mouseY = Input.GetAxisRaw("Mouse Y");
+        Vector2 mouseDelta = Mouse.current != null
+            ? Mouse.current.delta.ReadValue()
+            : Vector2.zero;
 
-        if (Mathf.Abs(mouseX) < mouseDeadZone)
-        {
-            mouseX = 0f;
-        }
+        float mouseX = mouseDelta.x * mouseSensitivity * Time.deltaTime;
+        float mouseY = mouseDelta.y * mouseSensitivity * Time.deltaTime;
 
-        if (Mathf.Abs(mouseY) < mouseDeadZone)
-        {
-            mouseY = 0f;
-        }
+        if (Mathf.Abs(mouseX) < mouseDeadZone) mouseX = 0f;
+        if (Mathf.Abs(mouseY) < mouseDeadZone) mouseY = 0f;
 
-        playerBody.Rotate(Vector3.up * mouseX * mouseSensitivity * Time.deltaTime, Space.Self);
+        playerBody.Rotate(Vector3.up * mouseX, Space.Self);
 
-        xRotation -= mouseY * mouseSensitivity * Time.deltaTime;
+        xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         cameraPivot.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
