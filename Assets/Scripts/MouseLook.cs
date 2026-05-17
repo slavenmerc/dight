@@ -1,29 +1,56 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MouseLook : MonoBehaviour
 {
     public float mouseSensitivity = 150f;
+    public float mouseDeadZone = 0.001f;
+    public Transform playerBody;
     public Transform cameraPivot;
 
-    float xRotation = 0f;
+    private float xRotation = 0f;
 
     void Start()
     {
+        if (playerBody == null)
+        {
+            playerBody = transform;
+        }
+
+        if (cameraPivot == null)
+        {
+            cameraPivot = transform.Find("Camera pivot");
+        }
+
+        if (cameraPivot == null)
+        {
+            Debug.LogError("MouseLook needs a cameraPivot assigned, or a child object named 'Camera pivot'.", this);
+            enabled = false;
+            return;
+        }
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    void Update()
+    void LateUpdate()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        float mouseX = Input.GetAxisRaw("Mouse X");
+        float mouseY = Input.GetAxisRaw("Mouse Y");
 
-        // Поворот влево / вправо
-        transform.Rotate(Vector3.up * mouseX);
+        if (Mathf.Abs(mouseX) < mouseDeadZone)
+        {
+            mouseX = 0f;
+        }
 
-        // Поворот вверх / вниз
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
+        if (Mathf.Abs(mouseY) < mouseDeadZone)
+        {
+            mouseY = 0f;
+        }
+
+        playerBody.Rotate(Vector3.up * mouseX * mouseSensitivity * Time.deltaTime, Space.Self);
+
+        xRotation -= mouseY * mouseSensitivity * Time.deltaTime;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         cameraPivot.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
