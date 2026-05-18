@@ -5,10 +5,13 @@ public class MouseLook : MonoBehaviour
 {
     public float mouseSensitivity = 150f;
     public float mouseDeadZone = 0.001f;
+    public float rollLerpSpeed = 10f;
     public Transform playerBody;
     public Transform cameraPivot;
 
     private float xRotation = 0f;
+    private float targetRoll = 0f;
+    private float currentRoll = 0f;
 
     void Start()
     {
@@ -49,7 +52,21 @@ public class MouseLook : MonoBehaviour
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        currentRoll = Mathf.Lerp(currentRoll, targetRoll, rollLerpSpeed * Time.deltaTime);
 
-        cameraPivot.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        cameraPivot.localRotation = Quaternion.Euler(xRotation, 0f, currentRoll);
+    }
+
+    public void SetCameraRoll(float roll)
+    {
+        targetRoll = roll;
+    }
+
+    public void AddYawAssist(float yawDegrees)
+    {
+        if (playerBody != null && Mathf.Abs(yawDegrees) > 0.001f)
+        {
+            playerBody.Rotate(Vector3.up * yawDegrees, Space.Self);
+        }
     }
 }
