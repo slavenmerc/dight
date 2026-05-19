@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6023739381470888094}
   - component: {fileID: 3324590538397911273}
   - component: {fileID: 7431644214385763075}
+  - component: {fileID: 6843954659493900713}
   m_Layer: 0
   m_Name: SpiderDay
   m_TagString: Untagged
@@ -107,6 +108,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.25
   m_Center: {x: 0, y: 0.2, z: 0}
+--- !u!114 &6843954659493900713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7342132318644445248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ad49c793134c6442803ce89184faffd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
+  enemyElement: 0
+  damageAmount: 25
 --- !u!1001 &3674093735674309044
 PrefabInstance:
   m_ObjectHideFlags: 0
