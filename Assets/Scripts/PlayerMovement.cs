@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement; // Добавлено для перезагрузки сцены при смерти
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
@@ -51,6 +52,10 @@ public class PlayerMovement : MonoBehaviour
     public float wallRunBobAmount = 0.06f;
     public float wallRunBobSpeed = 14f;
     public float bobReturnSpeed = 10f;
+
+    [Header("Health")]
+    public float maxHealth = 100f;
+    public float health = 50f; // Изначально 50 ХП согласно условию
 
     private CharacterController controller;
     private MouseLook mouseLook;
@@ -481,6 +486,37 @@ public class PlayerMovement : MonoBehaviour
         return (keyboard != null && keyboard.leftShiftKey.isPressed)
             || (gamepad != null && gamepad.leftStickButton.isPressed);
     }
+
+    // =================================================================
+    // МЕХАНИКА ЗДОРОВЬЯ И СМЕРТИ (ИНТЕГРАЦИЯ)
+    // =================================================================
+
+    /// <summary>
+    /// Изменяет здоровье игрока. Положительное значение наносит урон, отрицательное — лечит.
+    /// </summary>
+    public void ChangeHealth(float amount)
+    {
+        health -= amount;
+
+        // Если вышли за пределы: меньше 0 или больше максимума (100) — мгновенная смерть
+        if (health < 0f || health > maxHealth)
+        {
+            Die();
+            return;
+        }
+
+        // Если здоровье стало ровно 0 или ровно 100 — игрок тоже погибает
+        if (Mathf.Approximately(health, 0f) || Mathf.Approximately(health, maxHealth))
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("Игрок погиб! Перезапуск уровня...");
+        
+        // Перезапускаем текущую активную сцену
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
-
-
