@@ -11,6 +11,11 @@ public class MenuController : MonoBehaviour
         SceneManager.LoadScene("game");
     }
 
+    public void LoadGame()
+    {
+        SaveGameManager.LoadLastGame();
+    }
+
     public void OpenSettings()
     {
         mainMenuPanel.SetActive(false);

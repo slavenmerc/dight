@@ -154,6 +154,35 @@ public class SpiderEnemy : Enemy
             spiderVisual.SetActive(currentState != SpiderState.Cocoon && currentState != SpiderState.Dead);
     }
 
+    public void ApplyLoadedState(SpiderSaveData saveData)
+    {
+        StopAllCoroutines();
+        isJumping = false;
+
+        speed = saveData.speed;
+        damage = saveData.damage;
+        enemyType = (EnemyType)saveData.enemyType;
+        wakeUpDistance = saveData.wakeUpDistance;
+        stopDistance = saveData.stopDistance;
+        attackDistance = saveData.attackDistance;
+        jumpForce = saveData.jumpForce;
+        jumpDuration = saveData.jumpDuration;
+
+        currentState = (SpiderState)saveData.state;
+        if (currentState == SpiderState.Attacking)
+        {
+            currentState = SpiderState.Chasing;
+        }
+
+        if (spiderVisual != null)
+        {
+            animator = spiderVisual.GetComponent<Animator>();
+        }
+
+        UpdateVisuals();
+        SetMovingAnimation(false);
+    }
+
     // Метод управления анимацией
     void SetMovingAnimation(bool isMoving)
     {
