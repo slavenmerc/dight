@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1129792575925149733}
   - component: {fileID: 738287443090679901}
   - component: {fileID: 8278461933561098869}
+  - component: {fileID: 1312699504605212548}
   m_Layer: 0
   m_Name: SpiderNight
   m_TagString: Untagged
@@ -107,6 +108,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.25
   m_Center: {x: 0, y: 0.2, z: 0}
+--- !u!114 &1312699504605212548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236377747202868954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ad49c793134c6442803ce89184faffd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
+  enemyElement: 1
+  damageAmount: 25
 --- !u!1001 &491062988829407465
 PrefabInstance:
   m_ObjectHideFlags: 0
