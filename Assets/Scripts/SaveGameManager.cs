@@ -28,6 +28,8 @@ public static class SaveGameManager
             sceneName = SceneManager.GetActiveScene().name,
             playerPosition = player.transform.position,
             playerRotation = player.transform.eulerAngles,
+            playerBalance = CapturePlayerBalance(player),
+            playerHealth = CapturePlayerMovementHealth(player),
             spiders = CaptureSpiders(),
             savedAt = DateTime.UtcNow.ToString("O")
         };
@@ -102,8 +104,71 @@ public static class SaveGameManager
             characterController.enabled = controllerWasEnabled;
         }
 
+        RestorePlayerBalance(player, pendingLoadData.playerBalance);
+        RestorePlayerMovementHealth(player, pendingLoadData.playerHealth);
         RestoreSpiders(pendingLoadData.spiders);
         pendingLoadData = null;
+    }
+
+    private static PlayerBalanceSaveData CapturePlayerBalance(GameObject player)
+    {
+        PlayerBalanceHealth balanceHealth = player.GetComponent<PlayerBalanceHealth>();
+        if (balanceHealth == null)
+        {
+            return new PlayerBalanceSaveData { hasBalance = false };
+        }
+
+        return new PlayerBalanceSaveData
+        {
+            hasBalance = true,
+            currentBalance = balanceHealth.CurrentBalance,
+            maxThreshold = balanceHealth.MaxThreshold
+        };
+    }
+
+    private static PlayerHealthSaveData CapturePlayerMovementHealth(GameObject player)
+    {
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+        if (playerMovement == null)
+        {
+            return new PlayerHealthSaveData { hasHealth = false };
+        }
+
+        return new PlayerHealthSaveData
+        {
+            hasHealth = true,
+            health = playerMovement.health,
+            maxHealth = playerMovement.maxHealth
+        };
+    }
+
+    private static void RestorePlayerBalance(GameObject player, PlayerBalanceSaveData balanceData)
+    {
+        if (balanceData == null || !balanceData.hasBalance)
+        {
+            return;
+        }
+
+        PlayerBalanceHealth balanceHealth = player.GetComponent<PlayerBalanceHealth>();
+        if (balanceHealth != null)
+        {
+            balanceHealth.SetBalance(balanceData.currentBalance);
+        }
+    }
+
+    private static void RestorePlayerMovementHealth(GameObject player, PlayerHealthSaveData healthData)
+    {
+        if (healthData == null || !healthData.hasHealth)
+        {
+            return;
+        }
+
+        PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+        if (playerMovement != null)
+        {
+            playerMovement.maxHealth = healthData.maxHealth;
+            playerMovement.health = healthData.health;
+        }
     }
 
     private static SpiderSaveData[] CaptureSpiders()
@@ -218,9 +283,27 @@ public static class SaveGameManager
         public string sceneName;
         public Vector3 playerPosition;
         public Vector3 playerRotation;
+        public PlayerBalanceSaveData playerBalance;
+        public PlayerHealthSaveData playerHealth;
         public SpiderSaveData[] spiders;
         public string savedAt;
     }
+}
+
+[Serializable]
+public class PlayerBalanceSaveData
+{
+    public bool hasBalance;
+    public float currentBalance;
+    public float maxThreshold;
+}
+
+[Serializable]
+public class PlayerHealthSaveData
+{
+    public bool hasHealth;
+    public float health;
+    public float maxHealth;
 }
 
 [Serializable]

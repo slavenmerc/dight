@@ -13,6 +13,9 @@ public class PlayerBalanceHealth : MonoBehaviour
     private float currentBalance = 0f; 
     private bool isDead = false;
 
+    public float CurrentBalance => currentBalance;
+    public float MaxThreshold => maxThreshold;
+
     void Start()
     {
         if (balanceSlider != null)
@@ -44,6 +47,19 @@ public class PlayerBalanceHealth : MonoBehaviour
         }
 
         CheckDeath();
+    }
+
+    public void SetBalance(float value)
+    {
+        isDead = false;
+        currentBalance = Mathf.Clamp(value, -maxThreshold, maxThreshold);
+
+        if (balanceSlider != null)
+        {
+            balanceSlider.minValue = -maxThreshold;
+            balanceSlider.maxValue = maxThreshold;
+            balanceSlider.value = currentBalance;
+        }
     }
 
     private void CheckDeath()
